@@ -1,0 +1,49 @@
+---
+title: "Class_11:structural bioinformatics"
+output: github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## The PDB database for biomolecular structure
+
+>Q1
+
+download csv file from PDB website
+```{r}
+data <- read.csv("Data Export Summary.csv")
+data
+```
+
+The percentage of X-ray and electron microscopy
+```{r}
+data$Total/sum(data$Total)*100
+
+```
+
+The proportion of proteins
+```{r}
+round(sum(data$Proteins)/sum(data$Total)*100,2)
+```
+
+## HIV-Pr structure analysis
+
+```{r}
+library(bio3d)
+pdb <- read.pdb('1hsg.pdb')
+
+##atom.select()
+##write.pdb()
+##trim.pdb()
+```
+```{r}
+ligand <- atom.select(pdb, 'ligand',value=TRUE)
+write.pdb(ligand, file = "1hsg_ligand.pdb")
+```
+
+```{r}
+?read
+```
+

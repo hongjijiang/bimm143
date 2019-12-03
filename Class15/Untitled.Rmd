@@ -1,0 +1,152 @@
+---
+title: "Untitled"
+author: "Hongji Jiang"
+date: "11/14/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+```{r}
+metaFile <- "GSE37704_metadata.csv"
+countFile <- "GSE37704_featurecounts.csv"
+```
+
+```{r}
+colData = read.csv(metaFile, row.names=1)
+head(colData)
+```
+
+```{r}
+countData = read.csv(countFile, row.names=1)
+head(countData)
+```
+
+*length* column in countdata is going to cause problems with the required mathcing to metadata file so lets remove it 
+```{r}
+countData <- as.matrix(countData[,-1])
+head(countData)
+```
+
+```{r}
+colnames(countData)
+```
+
+```{r}
+rownames(colData)
+```
+
+```{r}
+all(colnames(countData) == rownames(colData))
+```
+
+#remove zero count genes 
+We want to remove genes with 0 count values in all experiments(i,e rows have 0 across all cols)
+```{r}
+countData = countData[rowSums(countData) != 0,]
+head(countData)
+```
+
+```{r}
+library(DESeq2)
+```
+
+```{r}
+#set up the object with out data in the way DESeq wants it 
+dds = DESeqDataSetFromMatrix(countData=countData,
+                             colData=colData,
+                             design=~condition)
+#run the analysis
+dds = DESeq(dds)
+```
+
+```{r}
+res = results(dds, contrast=c("condition", "hoxa1_kd", "control_sirna"))
+res
+```
+
+```{r}
+plot(res$log2FoldChange,-log(res$padj))
+```
+
+```{r}
+mycols <- rep('gray',length(res$padj))
+mycols[abs(res$log2FoldChange)>2]<-'blue'
+mycols[res$padj > 0.005] <- 'gray'
+plot(res$log2FoldChange,-log(res$padj),col = mycols)
+```
+
+```{r eval=FALSE}
+#BiocManager::install("AnnotationDbi")
+#::install("org.Hs.eg.db")
+library(AnnotationDbi)
+library(org.Hs.eg.db)
+# We can translate between the following database
+columns(org.Hs.eg.db)
+```
+
+```{r}
+res$symbol = mapIds(org.Hs.eg.db,
+                    keys=row.names(countData), 
+                    keytype="ENSEMBL",
+                    column="SYMBOL",
+                    multiVals="first")
+res
+```
+```{r}
+res$entrez = mapIds(org.Hs.eg.db,
+                    keys= row.names(countData),
+                    keytype="ENSEMBL",
+                    column="ENTREZID",
+                    multiVals="first")
+```
+```{r}
+res$name =   mapIds(org.Hs.eg.db,
+                    keys=row.names(res),
+                    keytype="ENSEMBL",
+                    column="GENENAME",
+                    multiVals="first")
+```
+
+```{r}
+library(pathview)
+library(gage)
+library(gageData)
+```
+
+```{r}
+data(kegg.sets.hs)
+data(sigmet.idx.hs)
+# Focus on signaling and metabolic pathways only
+kegg.sets.hs = kegg.sets.hs[sigmet.idx.hs]
+
+# Examine the first 3 pathways
+head(kegg.sets.hs, 3)
+```
+
+```{r}
+foldchanges = res$log2FoldChange
+names(foldchanges) = res$entrez
+head(foldchanges)
+```
+
+```{r}
+keggres = gage(foldchanges, gsets=kegg.sets.hs)
+```
+
+```{r}
+attributes(keggres)
+```
+
+```{r}
+head(keggres$less)
+```
+
+```{r}
+pathview(gene.data=foldchanges, pathway.id="hsa04110")
+```
+

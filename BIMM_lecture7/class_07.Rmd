@@ -1,0 +1,159 @@
+---
+title: "Untitled"
+author: "Hongji Jiang"
+date: "10/22/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+Source my functions from last day
+
+```{r}
+source("http://tinyurl.com/rescale-R")
+```
+
+```{r}
+rescale(1:10)
+```
+
+```{r}
+rescale(c(1,10,5,NA,6))
+```
+
+```{r}
+rescale2(c(1:10,"as"))
+
+```
+
+```{r}
+rescale(c(1:10,"as"))
+```
+
+Write a function to find where there are NA elements in two input vectors
+First make some simple input where I know the answer
+```{r}
+x<-c(1,2,NA,3,NA)
+y<-c(NA,3,NA,3,4)
+```
+
+Looked online and found the **is.na()** function
+```{r}
+is.na(x)
+```
+
+
+and the **which()** function tells us where the TRUE values are 
+```{r}
+which(is.na(x))
+```
+
+```{r}
+is.na(x)
+is.na(y)
+```
+
+The AND function requires two input TRUE to give a true output
+```{r}
+is.na(x) & is.na(y)
+```
+
+Taking the **sum()** of TRUE FALSE vector will tell me how many TRUE elements I have 
+```{r}
+sum(is.na(x)&is.na(y))
+```
+
+```{r}
+sum(TRUE,TRUE,FALSE)
+```
+
+Now turn it into function 
+
+```{r}
+both_na <- function(x,y){
+  sum(is.na(x)&is.na(y))
+}
+```
+
+```{r}
+x <-  c(NA, NA, NA)
+y1 <- c( 1, NA, NA)
+y2 <- c( 1, NA, NA, NA,NA,NA)
+both_na(x,y2)
+```
+
+```{r}
+x2<-c(NA,NA)
+both_na(x2,y2)
+```
+
+```{r}
+plot(1:10,col=c('red','blue'))
+```
+
+```{r}
+y3<-c(1,NA,NA,NA,NA,NA,NA)
+length(x)
+length(y3)
+```
+
+
+```{r}
+
+both_na2 <- function(x,y){
+  if(length(x) != length(y)){
+    stop("Input x and input y should have the same length")
+  }
+  sum(is.na(x)&is.na(y))
+}
+```
+
+```{r}
+both_na2(x,y2)
+```
+
+```{r}
+grade0 <- function(x){
+  has_NA = FALSE
+  for(i in x){
+    if(is.na(i)){
+      has_NA = TRUE
+      x <- setdiff(x, i)
+    }
+  }
+  if(has_NA){
+    return(mean(x))
+  }
+  else
+    return(mean(x[-which.min(x)]))
+}
+```
+
+```{r}
+# student 1
+s1 <- c(100, 100, 100, 100, 100, 100, 100, 90) # student 2
+s2 <-  c(100, NA, 90, 90, 90, 90, 97, 80)
+```
+
+```{r}
+grade <- function(x){
+  if(any(is.na(x))){
+    warning("Student is missing a homework")
+  }
+  mean(x[which.min(x)],na.rm=TRUE)
+}
+```
+
+```{r}
+url <- "https://tinyurl.com/gradeinput"
+hw <- read.csv(url, row.names = 1)
+```
+
+```{r}
+apply(hw, 1, grade)
+```
+

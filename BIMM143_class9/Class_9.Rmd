@@ -1,0 +1,176 @@
+---
+title: "Class_9"
+author: "Hongji Jiang"
+date: "10/29/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+fna.data <- "WisconsinCancer.csv"
+```
+
+```{r}
+wisc.df <- read.csv(fna.data)
+```
+
+```{r}
+head(wisc.df)
+```
+
+```{r}
+wisc.data <- as.matrix(wisc.df[,3:32])
+```
+
+```{r}
+row.names(wisc.data) <- wisc.df$id
+```
+
+```{r}
+##how to know how many have cancer
+table(wisc.df$diagnosis)
+```
+
+```{r}
+diagnosis <- wisc.df$diagnosis
+```
+
+-Q1 How many observations are in this dataset?
+```{r}
+nrow(wisc.df)
+```
+
+-Q2 
+```{r}
+table(wisc.df$diagnosis)
+```
+
+-Q3
+```{r}
+length(grep("_mean",colnames(wisc.df),value = "TRUE"))
+```
+
+
+```{r}
+colMeans(wisc.data)
+apply(wisc.data,2,sd)
+```
+
+```{r}
+round(colMeans(wisc.data),3)
+```
+
+```{r}
+round(apply(wisc.data,2,sd),3)
+```
+
+These values look very different so I will use "scale = TRUE" function
+I run PCA
+
+```{r}
+# Perform PCA on wisc.data by completing the following code
+wisc.pr <- prcomp(wisc.data, scale = TRUE)
+```
+
+```{r}
+a <- summary(wisc.pr)
+a$importance
+```
+
+```{r}
+plot(wisc.pr)
+```
+
+```{r}
+biplot(wisc.pr)
+```
+
+Let's make a plot of PC1 vs PC2 
+```{r}
+plot(wisc.pr$x[,1],wisc.pr$x[,2])
+```
+
+```{r}
+plot(wisc.pr$x[,1],wisc.pr$x[,2],col = diagnosis)
+```
+
+```{r}
+pr.var <- wisc.pr$sdev^2
+head(pr.var)
+```
+
+```{r}
+data.scaled <- scale(wisc.data)
+```
+
+```{r}
+data.dist <- dist(data.scaled)
+```
+
+```{r}
+wisc.hclust <- hclust(data.dist,method = "complete")
+```
+
+```{r}
+plot(wisc.hclust)
+```
+
+```{r}
+wisc.hclust.clusters <- cutree(wisc.hclust, h =20)
+```
+
+```{r}
+table(wisc.hclust.clusters, diagnosis)
+```
+
+```{r}
+wisc.pr.hclust <- hclust(dist(wisc.pr$x[,1:7]),method = "ward.D2")
+```
+
+
+```{r}
+grps <- cutree(wisc.pr.hclust, k=2)
+table(grps)
+```
+
+```{r}
+grps <- cutree(wisc.pr.hclust, k=2)
+table(grps)
+```
+```{r}
+grps
+```
+
+
+```{r}
+plot(wisc.pr$x[,1:2], col=grps+1)
+```
+
+```{r}
+plot(wisc.pr$x[,1:2], col=diagnosis)
+```
+
+```{r}
+#url <- "new_samples.csv"
+url <- "https://tinyurl.com/new-samples-CSV"
+new <- read.csv(url)
+npc <- predict(wisc.pr, newdata=new)
+npc
+```
+
+```{r}
+g <- as.factor(grps)
+levels(g)
+```
+
+
+
+```{r}
+plot(wisc.pr$x[,1:2], col=g)
+points(npc[,1], npc[,2], col="blue", pch=16, cex=3)
+text(npc[,1], npc[,2], c(1,2), col="white")
+```
+
