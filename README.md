@@ -4,4 +4,4 @@ This is my work from [BIMM143 at UC San Diego](https://bioboot.github.io/bimm143
 
 ## Content:
 -Class05: [R graphics](https://github.com/hongjijiang/bimm143/blob/master/BIMM143_Lecture5/class5_R.md)
-
+-Class18: [Cancer and personalized medication](https://github.com/hongjijiang/bimm143/blob/master/C18.md)
