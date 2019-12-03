@@ -2,7 +2,7 @@
 title: "Class 8 machine learning"
 author: "Hongji Jiang"
 date: "10/24/2019"
-output:
+output: github_document
   pdf_document: default
   html_document: default
 ---

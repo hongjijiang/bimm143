@@ -1,3 +1,9 @@
+#' ---
+#' title: "Class 05"
+#' author: "Hongji Jiang"
+#' output: github_document
+#' ---
+
 #Class5 Data Visualization
 
 x <- rnorm(1000)

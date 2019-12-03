@@ -2,9 +2,9 @@
 title: "Class6 R functions"
 author: "Hongji Jiang"
 date: "10/17/2019"
-output:
-  html_document: default
-  pdf_document: default
+output: github_document
+  #html_document: default
+  #pdf_document: default
 ---
 
 ```{r setup, include=FALSE}
