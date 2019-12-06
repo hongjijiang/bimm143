@@ -4,7 +4,7 @@ This is my work from [BIMM143 at UC San Diego](https://bioboot.github.io/bimm143
 
 ## Content:
 -Class05: [R graphics](https://github.com/hongjijiang/bimm143/blob/master/BIMM143_Lecture5/class5_R.md)
--Class06: [R functions](https://bioboot.github.io/bimm143_F19/lectures/).
+-Class06: [R functions](https://github.com/hongjijiang/bimm143/blob/master/Bimm143_Lecture6/class6.md).
 -Class07: [Using CRAN and Bioconductor Packages for Bioinformatics]
 -Class08: [Introduction to Machine Learning for Bioinformatics]
 -Class09: [Unsupervised Learning Mini-Project]()
